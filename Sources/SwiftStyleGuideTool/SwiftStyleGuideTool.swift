@@ -6,8 +6,13 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Argument(help: "The directories to format")
   var directories: [String]
 
+  // MARK: Swift Format
+
   @Option(help: "The absolute path to a SwiftFormat binary")
   var swiftFormatPath: String
+
+  @Option(help: "The absolute path to the SwiftFormat config file")
+  var swiftFormatConfig = Bundle.module.path(forResource: "default", ofType: "swiftformat")!
 
   mutating func run() throws {
     log("Running style guide tool...")
@@ -16,7 +21,9 @@ struct SwiftStyleGuideTool: ParsableCommand {
   }
 
   private lazy var swiftFormat: Process = {
-    var arguments = directories
+    var arguments = directories + [
+      "--config", swiftFormatConfig,
+    ]
 
     let swiftFormat = Process()
     swiftFormat.executableURL = URL(filePath: swiftFormatPath)
