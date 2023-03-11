@@ -4,19 +4,20 @@
 import PackageDescription
 
 let package = Package(
-  name: "SwiftStyleGuide",
-  products: [
-    .executable(name: "style", targets: ["SwiftStyleGuideTool"])
-  ],
-  dependencies: [
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3"),
-  ],
-  targets: [
-    .executableTarget(
-      name: "SwiftStyleGuideTool",
-      dependencies: [
-        .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]
-    )
-  ]
+    name: "SwiftStyleGuide",
+    platforms: [.macOS(.v13)],
+    products: [
+        .executable(name: "style", targets: ["SwiftStyleGuideTool"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3"),
+    ],
+    targets: [
+        .executableTarget(
+            name: "SwiftStyleGuideTool",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ]
+        ),
+    ]
 )
