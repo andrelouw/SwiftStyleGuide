@@ -45,6 +45,15 @@ struct SwiftStyleGuideTool: ParsableCommand {
       log(swiftFormat.shellCommand)
       log("SwiftFormat ended with exit code \(swiftFormat.terminationStatus)")
     }
+
+    if swiftFormat.terminationStatus == SwiftFormatExitCode.lintFailure {
+      throw ExitCode.failure
+    }
+
+    // Any other non-success exit code is an unknown failure
+    if swiftFormat.terminationStatus != EXIT_SUCCESS {
+      throw ExitCode(swiftFormat.terminationStatus)
+    }
   }
 
   private lazy var swiftFormat: Process = {
@@ -84,4 +93,16 @@ extension Process {
     let arguments = arguments ?? []
     return "\(executableURL) \(arguments.joined(separator: " "))"
   }
+}
+
+/// Known exit codes used by SwiftFormat
+enum SwiftFormatExitCode {
+  /// This code will be returned in the event of a successful formatting run or if `--lint` detects no violations.
+  static let success: Int32 = 0
+
+  /// This code will be returned only when running in `--lint` mode if the input requires formatting.
+  static let lintFailure: Int32 = 1
+
+  /// This code will be returned if there is a problem with the input or configuration arguments.
+  static let programError: Int32 = 70
 }
