@@ -1,4 +1,4 @@
-public struct SwiftStyleGuide {
+public struct SwiftStyleGuideTool {
     public private(set) var text = "Hello, World!"
 
     public init() {
