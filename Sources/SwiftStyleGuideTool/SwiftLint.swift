@@ -57,6 +57,7 @@ final class SwiftLint: StyleGuideToolProcess {
 
     // Required for SwiftLint to emit a non-zero exit code on lint failure
     arguments += ["--strict"]
+    arguments += ["--quiet"]
 
     if let cachePath {
       arguments += ["--cache-path", cachePath]

@@ -7,20 +7,21 @@ let package = Package(
   name: "SwiftStyleGuide",
   platforms: [.macOS(.v13)],
   products: [
-    .executable(name: "style", targets: ["SwiftStyleGuideTool"]),
+    .executable(name: "style", targets: ["SwiftStyleGuideTool"])
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3"),
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
   ],
   targets: [
     .executableTarget(
       name: "SwiftStyleGuideTool",
       dependencies: [
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "ArgumentParser", package: "swift-argument-parser")
       ],
       resources: [
         .process("default.swiftformat"),
+        .process("swiftlint.yml")
       ]
-    ),
+    )
   ]
 )

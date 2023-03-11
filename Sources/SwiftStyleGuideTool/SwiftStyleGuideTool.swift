@@ -3,12 +3,12 @@ import Foundation
 
 /// Example command:
 /// ```
-/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" .
+/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" --swift-lint-path /opt/homebrew/bin/swiftlint --swift-lint-cache-path  "swiftlint.cache" .
 /// ```
 ///
-/// To only lint:
+/// To only lint and not fix:
 /// ```
-/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" --lint .
+/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" --swift-lint-path /opt/homebrew/bin/swiftlint --swift-lint-cache-path  "swiftlint.cache" . --lint --log
 /// ```
 
 @main
@@ -36,7 +36,18 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Option(help: "The absolute path to use for SwiftFormat's cache")
   var swiftFormatCachePath: String?
 
-  private lazy var processes: [StyleGuideToolProcess] = [swiftFormat]
+  // MARK: Swift Lint
+
+  @Option(help: "The absolute path to a SwiftLint binary")
+  var swiftLintPath: String
+
+  @Option(help: "The absolute path to the SwiftLint config file")
+  var swiftLintConfig = Bundle.module.path(forResource: "swiftlint", ofType: "yml")!
+
+  @Option(help: "The absolute path to use for SwiftLint's cache")
+  var swiftLintCachePath: String?
+
+  private lazy var processes: [StyleGuideToolProcess] = [swiftFormat, swiftLint]
 
   private lazy var swiftFormat = SwiftFormat(
     path: swiftFormatPath,
@@ -45,6 +56,14 @@ struct SwiftStyleGuideTool: ParsableCommand {
     cachePath: swiftFormatCachePath,
     onlyLint: lint,
     swiftVersion: swiftVersion
+  )
+
+  private lazy var swiftLint = SwiftLint(
+    path: swiftLintPath,
+    directories: directories,
+    config: swiftFormatConfig,
+    cachePath: swiftLintCachePath,
+    shouldFix: !lint
   )
 
   mutating func run() throws {
@@ -69,7 +88,7 @@ struct SwiftStyleGuideTool: ParsableCommand {
     if log {
       switch result {
       case .success:
-        log("\(process.name) completed with successfully")
+        log("\(process.name) completed successfully")
 
       case .lintFailure:
         log("\(process.name) failed due to linting failure")
