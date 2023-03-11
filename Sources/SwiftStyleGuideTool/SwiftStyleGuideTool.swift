@@ -19,6 +19,9 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Flag(help: "When passed, source files are not reformatted")
   var lint = false
 
+  @Option(help: "The project's minimum Swift version")
+  var swiftVersion: String?
+
   // MARK: Swift Format
 
   @Option(help: "The absolute path to a SwiftFormat binary")
@@ -47,6 +50,10 @@ struct SwiftStyleGuideTool: ParsableCommand {
 
     if lint {
       arguments += ["--lint"]
+    }
+
+    if let swiftVersion = swiftVersion {
+      arguments += ["--swiftversion", swiftVersion]
     }
 
     let swiftFormat = Process()
