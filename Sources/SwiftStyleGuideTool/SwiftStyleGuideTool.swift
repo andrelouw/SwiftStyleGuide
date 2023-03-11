@@ -36,6 +36,15 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Option(help: "The absolute path to use for SwiftFormat's cache")
   var swiftFormatCachePath: String?
 
+  private lazy var swiftFormat = SwiftFormat(
+    path: swiftFormatPath,
+    directories: directories,
+    config: swiftFormatConfig,
+    cachePath: swiftFormatCachePath,
+    onlyLint: lint,
+    swiftVersion: swiftVersion
+  ).process
+
   mutating func run() throws {
     log("Running style guide tool...")
     try swiftFormat.run()
@@ -55,29 +64,6 @@ struct SwiftStyleGuideTool: ParsableCommand {
       throw ExitCode(swiftFormat.terminationStatus)
     }
   }
-
-  private lazy var swiftFormat: Process = {
-    var arguments = directories
-
-    arguments += ["--config", swiftFormatConfig]
-
-    if let swiftFormatCachePath {
-      arguments += ["--cache", swiftFormatCachePath]
-    }
-
-    if lint {
-      arguments += ["--lint"]
-    }
-
-    if let swiftVersion = swiftVersion {
-      arguments += ["--swiftversion", swiftVersion]
-    }
-
-    let swiftFormat = Process()
-    swiftFormat.executableURL = URL(filePath: swiftFormatPath)
-    swiftFormat.arguments = arguments
-    return swiftFormat
-  }()
 
   private func log(_ string: String) {
     print("[SwiftStyleGuideTool]", string)
