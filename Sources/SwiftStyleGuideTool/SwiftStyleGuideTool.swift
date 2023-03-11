@@ -67,7 +67,16 @@ struct SwiftStyleGuideTool: ParsableCommand {
     let result = try process.run()
 
     if log {
-      log("\(process.name) ended with exit code `\(result)`")
+      switch result {
+      case .success:
+        log("\(process.name) completed with successfully")
+
+      case .lintFailure:
+        log("\(process.name) failed due to linting failure")
+
+      case let .error(exitCode):
+        log("\(process.name) failed with exit code: \(exitCode)")
+      }
     }
 
     return result
