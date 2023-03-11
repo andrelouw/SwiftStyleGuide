@@ -22,6 +22,9 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Option(help: "The project's minimum Swift version")
   var swiftVersion: String?
 
+  @Flag(help: "When true, logs the commands that are executed")
+  var log = false
+
   // MARK: Swift Format
 
   @Option(help: "The absolute path to a SwiftFormat binary")
@@ -37,6 +40,11 @@ struct SwiftStyleGuideTool: ParsableCommand {
     log("Running style guide tool...")
     try swiftFormat.run()
     swiftFormat.waitUntilExit()
+
+    if log {
+      log(swiftFormat.shellCommand)
+      log("SwiftFormat ended with exit code \(swiftFormat.terminationStatus)")
+    }
   }
 
   private lazy var swiftFormat: Process = {
@@ -65,9 +73,15 @@ struct SwiftStyleGuideTool: ParsableCommand {
   private func log(_ string: String) {
     print("[SwiftStyleGuideTool]", string)
   }
+}
 
-
-
-
-
+extension Process {
+  /// The shell command for the process.
+  ///
+  /// Returns the executable url and the arguments
+  var shellCommand: String {
+    let executableURL = executableURL?.absoluteString ?? ""
+    let arguments = arguments ?? []
+    return "\(executableURL) \(arguments.joined(separator: " "))"
+  }
 }
