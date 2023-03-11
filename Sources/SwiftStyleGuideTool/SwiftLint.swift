@@ -1,14 +1,13 @@
 import Foundation
 
-final class SwiftFormat: StyleGuideToolProcess {
+final class SwiftLint: StyleGuideToolProcess {
   private let path: String
   private let directories: [String]
   private let config: String
   private let cachePath: String?
-  private let onlyLint: Bool
-  private let swiftVersion: String?
+  private let shouldFix: Bool
 
-  let name = "SwiftFormat"
+  let name = "SwiftLint"
 
   var command: String {
     process.shellCommand
@@ -26,27 +25,25 @@ final class SwiftFormat: StyleGuideToolProcess {
     directories: [String],
     config: String,
     cachePath: String?,
-    onlyLint: Bool,
-    swiftVersion: String?
+    shouldFix: Bool
   ) {
     self.path = path
     self.directories = directories
     self.config = config
     self.cachePath = cachePath
-    self.onlyLint = onlyLint
-    self.swiftVersion = swiftVersion
+    self.shouldFix = shouldFix
   }
 
   func run() throws -> ProcessResult {
     try process.run()
     process.waitUntilExit()
 
-    if process.terminationStatus == SwiftFormatExitCode.lintFailure {
+    if process.terminationStatus == SwiftLintExitCode.lintFailure {
       return .lintFailure
     }
 
     // Any other non-success exit code is an unknown failure
-    if process.terminationStatus != SwiftFormatExitCode.success {
+    if process.terminationStatus != SwiftLintExitCode.success {
       return .error(process.terminationStatus)
     }
 
@@ -58,30 +55,24 @@ final class SwiftFormat: StyleGuideToolProcess {
 
     arguments += ["--config", config]
 
+    // Required for SwiftLint to emit a non-zero exit code on lint failure
+    arguments += ["--strict"]
+
     if let cachePath {
-      arguments += ["--cache", cachePath]
+      arguments += ["--cache-path", cachePath]
     }
 
-    if onlyLint {
-      arguments += ["--lint"]
-    }
-
-    if let swiftVersion {
-      arguments += ["--swiftversion", swiftVersion]
+    if shouldFix {
+      arguments += ["--fix"]
     }
 
     return arguments
   }
 }
 
-/// Known exit codes used by SwiftFormat
-private enum SwiftFormatExitCode {
-  /// This code will be returned in the event of a successful formatting run or if `--lint` detects no violations.
+/// Known exit codes used by SwiftLint
+private enum SwiftLintExitCode {
   static let success: Int32 = 0
 
-  /// This code will be returned only when running in `--lint` mode if the input requires formatting.
-  static let lintFailure: Int32 = 1
-
-  /// This code will be returned if there is a problem with the input or configuration arguments.
-  static let programError: Int32 = 70
+  static let lintFailure: Int32 = 2
 }
