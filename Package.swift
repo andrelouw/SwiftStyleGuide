@@ -6,21 +6,17 @@ import PackageDescription
 let package = Package(
   name: "SwiftStyleGuide",
   products: [
-    .library(
-      name: "SwiftStyleGuideTool",
-      targets: ["SwiftStyleGuideTool"]
-    ),
+    .executable(name: "style", targets: ["SwiftStyleGuideTool"])
   ],
   dependencies: [
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3"),
   ],
   targets: [
-    .target(
+    .executableTarget(
       name: "SwiftStyleGuideTool",
-      dependencies: []
-    ),
-    .testTarget(
-      name: "SwiftStyleGuideToolTests",
-      dependencies: ["SwiftStyleGuideTool"]
-    ),
+      dependencies: [
+        .product(name: "ArgumentParser", package: "swift-argument-parser")
+      ]
+    )
   ]
 )

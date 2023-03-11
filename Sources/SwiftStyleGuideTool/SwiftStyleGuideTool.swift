@@ -1,6 +1,13 @@
-public struct SwiftStyleGuideTool {
-    public private(set) var text = "Hello, World!"
+import ArgumentParser
+import Foundation
 
-    public init() {
-    }
+@main
+struct SwiftStyleGuideTool: ParsableCommand {
+  func run() throws {
+    log("Hello style tool!")
+  }
+
+  private func log(_ string: String) {
+    print("[SwiftStyleGuideTool]", string)
+  }
 }
