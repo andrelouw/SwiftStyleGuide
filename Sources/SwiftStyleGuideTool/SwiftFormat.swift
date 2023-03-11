@@ -1,12 +1,32 @@
 import Foundation
 
-final class SwiftFormat {
+protocol StyleGuideToolProcess {
+  var name: String { get }
+  var command: String { get }
+
+  func run() throws -> ProcessResult
+}
+
+final class SwiftFormat: StyleGuideToolProcess {
+  let name = "SwiftFormat"
+
   let path: String
   let directories: [String]
   let config: String
   let cachePath: String?
   let onlyLint: Bool
   let swiftVersion: String?
+
+  var command: String {
+    process.shellCommand
+  }
+
+  private lazy var process: Process = {
+    let swiftFormat = Process()
+    swiftFormat.executableURL = URL(filePath: path)
+    swiftFormat.arguments = arguments
+    return swiftFormat
+  }()
 
   init(
     path: String,
@@ -23,13 +43,6 @@ final class SwiftFormat {
     self.onlyLint = onlyLint
     self.swiftVersion = swiftVersion
   }
-
-  lazy var process: Process = {
-    let swiftFormat = Process()
-    swiftFormat.executableURL = URL(filePath: path)
-    swiftFormat.arguments = arguments
-    return swiftFormat
-  }()
 
   private var arguments: [String] {
     var arguments = directories
@@ -51,7 +64,7 @@ final class SwiftFormat {
     return arguments
   }
 
-  func run() throws -> StyleFormatResult {
+  func run() throws -> ProcessResult {
     try process.run()
     process.waitUntilExit()
 
@@ -66,12 +79,6 @@ final class SwiftFormat {
 
     return .success
   }
-}
-
-enum StyleFormatResult {
-  case success
-  case lintFailure
-  case error(Int32)
 }
 
 /// Known exit codes used by SwiftFormat

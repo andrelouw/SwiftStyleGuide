@@ -36,6 +36,8 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Option(help: "The absolute path to use for SwiftFormat's cache")
   var swiftFormatCachePath: String?
 
+  private lazy var processes: [StyleGuideToolProcess] = [swiftFormat]
+
   private lazy var swiftFormat = SwiftFormat(
     path: swiftFormatPath,
     directories: directories,
@@ -48,22 +50,27 @@ struct SwiftStyleGuideTool: ParsableCommand {
   mutating func run() throws {
     log("Running style guide tool...")
 
+    let results = try processes.map {
+      try run(process: $0)
+    }
+
+    if results.exitCode > 0 {
+      throw ExitCode(results.exitCode)
+    }
+  }
+
+  private func run(process: StyleGuideToolProcess) throws -> ProcessResult {
     if log {
-      log(swiftFormat.process.shellCommand)
+      log(process.command)
     }
 
-    let result = try swiftFormat.run()
+    let result = try process.run()
 
-    switch result {
-    case .success:
-      return
-
-    case .lintFailure:
-      throw ExitCode.failure
-
-    case let .error(statusCode):
-      throw ExitCode(statusCode)
+    if log {
+      log("\(process.name) ended with exit code `\(result)`")
     }
+
+    return result
   }
 
   private func log(_ string: String) {
@@ -79,5 +86,48 @@ extension Process {
     let executableURL = executableURL?.absoluteString ?? ""
     let arguments = arguments ?? []
     return "\(executableURL) \(arguments.joined(separator: " "))"
+  }
+}
+
+extension [ProcessResult] {
+  var exitCode: Int32 {
+    if let error = errors.first {
+      return error
+    }
+
+    if contains(.lintFailure) {
+      return ProcessResult.lintFailure.exitCode
+    }
+
+    return ProcessResult.success.exitCode
+  }
+
+  private var errors: [Int32] {
+    compactMap { result in
+      if case .error = result {
+        return result.exitCode
+      }
+
+      return nil
+    }
+  }
+}
+
+enum ProcessResult: Equatable {
+  case success
+  case lintFailure
+  case error(Int32)
+
+  var exitCode: Int32 {
+    switch self {
+    case .success:
+      return 0
+
+    case .lintFailure:
+      return 1
+
+    case let .error(error):
+      return error
+    }
   }
 }
