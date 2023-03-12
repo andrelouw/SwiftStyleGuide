@@ -7,7 +7,8 @@ let package = Package(
   name: "SwiftStyleGuide",
   platforms: [.macOS(.v13)],
   products: [
-    .executable(name: "style", targets: ["SwiftStyleGuideTool"])
+//    .executable(name: "style", targets: ["SwiftStyleGuideTool"]), // This does not work for some reason
+    .plugin(name: "FormatSwift", targets: ["FormatSwift"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
@@ -20,6 +21,21 @@ let package = Package(
       ],
       resources: [
         .process("Resources")
+      ]
+    ),
+    .plugin(
+      name: "FormatSwift",
+      capability: .command(
+        intent: .custom(
+          verb: "format",
+          description: "Formats Swift source files according to Swift Style Guide"
+        ),
+        permissions: [
+          .writeToPackageDirectory(reason: "Format Swift source files")
+        ]
+      ),
+      dependencies: [
+        .target(name: "SwiftStyleGuideTool")
       ]
     )
   ]
