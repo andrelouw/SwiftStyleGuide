@@ -3,12 +3,7 @@ import Foundation
 
 /// Example command:
 /// ```
-/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" --swift-lint-path /opt/homebrew/bin/swiftlint --swift-lint-cache-path  "swiftlint.cache" .
-/// ```
-///
-/// To only lint and not fix:
-/// ```
-/// swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-cache-path  "swiftformat.cache" --swift-lint-path /opt/homebrew/bin/swiftlint --swift-lint-cache-path  "swiftlint.cache" . --lint --log
+///swift run style --swift-format-path /opt/homebrew/bin/swiftformat --swift-format-config default.swiftformat --swift-lint-path /opt/homebrew/bin/swiftlint --swift-lint-config swiftlint.yml .
 /// ```
 
 @main
@@ -16,55 +11,19 @@ struct SwiftStyleGuideTool: ParsableCommand {
   @Argument(help: "The directories to format")
   var directories: [String]
 
-  @Flag(help: "When passed, source files are not reformatted")
-  var lint = false
-
-  @Option(help: "The project's minimum Swift version")
-  var swiftVersion: String?
-
   @Flag(help: "When true, logs the commands that are executed")
   var log = false
 
-  // MARK: Swift Format
+  @OptionGroup(title: "SwiftFormat")
+  var swiftFormatOptions: SwiftFormat.Options
 
-  @Option(help: "The absolute path to a SwiftFormat binary")
-  var swiftFormatPath: String
+  @OptionGroup(title: "SwiftLint")
+  var swiftLintOptions: SwiftLint.Options
 
-  @Option(help: "The absolute path to the SwiftFormat config file")
-  var swiftFormatConfig = Bundle.module.path(forResource: "default", ofType: "swiftformat")!
-
-  @Option(help: "The absolute path to use for SwiftFormat's cache")
-  var swiftFormatCachePath: String?
-
-  // MARK: Swift Lint
-
-  @Option(help: "The absolute path to a SwiftLint binary")
-  var swiftLintPath: String
-
-  @Option(help: "The absolute path to the SwiftLint config file")
-  var swiftLintConfig = Bundle.module.path(forResource: "swiftlint", ofType: "yml")!
-
-  @Option(help: "The absolute path to use for SwiftLint's cache")
-  var swiftLintCachePath: String?
-
-  private lazy var processes: [StyleGuideToolProcess] = [swiftFormat, swiftLint]
-
-  private lazy var swiftFormat = SwiftFormat(
-    path: swiftFormatPath,
-    directories: directories,
-    config: swiftFormatConfig,
-    cachePath: swiftFormatCachePath,
-    onlyLint: lint,
-    swiftVersion: swiftVersion
-  )
-
-  private lazy var swiftLint = SwiftLint(
-    path: swiftLintPath,
-    directories: directories,
-    config: swiftFormatConfig,
-    cachePath: swiftLintCachePath,
-    shouldFix: !lint
-  )
+  private lazy var processes: [ToolProcess] = [
+    .swiftFormat(directories: directories, options: swiftFormatOptions),
+    .swiftLint(directories: directories, options: swiftLintOptions)
+  ]
 
   mutating func run() throws {
     log("Running style guide tool...")
@@ -78,7 +37,7 @@ struct SwiftStyleGuideTool: ParsableCommand {
     }
   }
 
-  private func run(process: StyleGuideToolProcess) throws -> ProcessResult {
+  private func run(process: ToolProcess) throws -> ProcessResult {
     if log {
       log(process.command)
     }
