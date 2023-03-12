@@ -17,6 +17,9 @@ let package = Package(
       name: "SwiftStyleGuideTool",
       dependencies: [
         .product(name: "ArgumentParser", package: "swift-argument-parser")
+      ],
+      resources: [
+        .process("Resources")
       ]
     )
   ]

@@ -7,7 +7,7 @@ struct SwiftLint: StyleGuideTool {
     var swiftLintPath: String
 
     @Option(help: "The absolute path to the SwiftLint config file")
-    var swiftLintConfig: String?
+    var swiftLintConfig: String = Bundle.module.path(forResource: "swiftlint", ofType: "yml")!
 
     @Option(help: "The absolute path to use for SwiftLint's cache")
     var swiftLintCachePath: String?
@@ -44,9 +44,7 @@ struct SwiftLint: StyleGuideTool {
   private static func argumentsParser(directories: [String], options: Options) -> [String] {
     var arguments = directories
 
-    if let config = options.swiftLintConfig {
-      arguments += ["--config", config]
-    }
+    arguments += ["--config", options.swiftLintConfig]
 
     // Required for SwiftLint to emit a non-zero exit code on lint failure
     arguments += ["--strict"]
