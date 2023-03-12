@@ -7,7 +7,7 @@ let package = Package(
   name: "SwiftStyleGuide",
   platforms: [.macOS(.v13)],
   products: [
-//    .executable(name: "style", targets: ["SwiftStyleGuideTool"]), // This does not work for some reason
+    //    .executable(name: "style", targets: ["SwiftStyleGuideTool"]), // This does not work for some reason
     .plugin(name: "FormatSwift", targets: ["FormatSwift"])
   ],
   dependencies: [
