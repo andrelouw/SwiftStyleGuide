@@ -8,7 +8,7 @@ struct FormatSwift: CommandPlugin {
     arguments: [String]
   ) async throws {
     var argumentExtractor = ArgumentExtractor(arguments)
-    let paths = try determinePaths(argumentExtractor: &argumentExtractor, context: context)
+    let paths = try determinePaths(&argumentExtractor, context)
     let toolArguments = toolArguments(from: paths, &argumentExtractor, context)
     let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
 
@@ -50,6 +50,8 @@ struct FormatSwift: CommandPlugin {
       context.pluginWorkDirectory.string + "/swiftlint.cache"
     ]
 
+    arguments += configFileArguments(context: context)
+
     if shouldOnlyLint(&argumentExtractor) {
       arguments += ["--swift-lint-only-lint", "--swift-format-only-lint"]
     }
@@ -65,12 +67,27 @@ struct FormatSwift: CommandPlugin {
     return arguments
   }
 
-  private func swiftVersion(_ argumentExtractor: inout ArgumentExtractor, context: PluginContext) -> String {
+  private func configFileArguments(context: PluginContext) -> [String] {
+    let packageDirectory = context.package.directory
+    var arguments = [String]()
+
+    if let swiftLintConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftlint.yml") {
+      arguments.append(contentsOf: ["--swift-lint-config", swiftLintConfigPath.string])
+    }
+
+    if let swiftFormatConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftformat") {
+      arguments.append(contentsOf: ["--swift-format-config", swiftFormatConfigPath.string])
+    }
+
+    return arguments
+  }
+
+  private func swiftVersion(_ argumentExtractor: inout ArgumentExtractor, _ context: PluginContext) -> String {
     // When running on a SPM package we infer the minimum Swift version from the
     // `swift-tools-version` in `Package.swift` by default if the user doesn't
     // specify one manually
     argumentExtractor.extractOption(named: "swift-version").last
-    ?? "\(context.package.toolsVersion.major).\(context.package.toolsVersion.minor)"
+      ?? "\(context.package.toolsVersion.major).\(context.package.toolsVersion.minor)"
   }
 
   private func shouldLog(_ argumentExtractor: inout ArgumentExtractor) -> Bool {
@@ -81,7 +98,7 @@ struct FormatSwift: CommandPlugin {
     argumentExtractor.extractFlag(named: "lint") > 0
   }
 
-  private func determinePaths(argumentExtractor: inout ArgumentExtractor, context: PluginContext) throws -> [String] {
+  private func determinePaths(_ argumentExtractor: inout ArgumentExtractor, _ context: PluginContext) throws -> [String] {
     // When ran from Xcode, the plugin command is invoked with `--target` arguments,
     // specifying the targets selected in the plugin dialog.
     let inputTargets = argumentExtractor.extractOption(named: "target")
@@ -127,4 +144,43 @@ struct FormatSwift: CommandPlugin {
 enum CommandError: Error {
   case lintFailure
   case unknownError(exitCode: Int32)
+}
+
+#if os(Linux)
+  import Glibc
+#else
+  import Darwin
+#endif
+
+extension Path {
+  /// Scans the receiver, then all of its parents looking for a configuration file with the name ".swiftlint.yml".
+  ///
+  /// - returns: Path to the configuration file, or nil if one cannot be found.
+  func firstFileInParentDirectories(named fileName: String) -> Path? {
+    let proposedDirectory = sequence(
+      first: self,
+      next: { path in
+        guard path.stem.count > 1 else {
+          // Check we're not at the root of this filesystem, as `removingLastComponent()`
+          // will continually return the root from itself.
+          return nil
+        }
+
+        return path.removingLastComponent()
+      }
+    ).first { path in
+      let potentialMatch = path.appending(subpath: fileName)
+      return potentialMatch.isAccessible()
+    }
+    return proposedDirectory?.appending(subpath: fileName)
+  }
+
+  /// Safe way to check if the file is accessible from within the current process sandbox.
+  private func isAccessible() -> Bool {
+    let result = string.withCString { pointer in
+      access(pointer, R_OK)
+    }
+
+    return result == 0
+  }
 }
