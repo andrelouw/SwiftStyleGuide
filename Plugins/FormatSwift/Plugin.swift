@@ -11,7 +11,16 @@ struct FormatSwift: CommandPlugin {
     // - Add specific paths using `--paths`
     // - Add specific targets using `--targets`
     // - defaults to running on whole directory (by using input paths helper)
-    let inputPaths = try inputPaths(for: context.package)
+
+    var argumentExtractor = ArgumentExtractor(arguments)
+    // If given, lint only the paths passed to `--paths`
+    var inputPaths = argumentExtractor.extractOption(named: "paths")
+
+    if inputPaths.isEmpty {
+      // Otherwise if no targets or paths listed we default to linting/formatting
+      // the entire package directory.
+      inputPaths = try self.inputPaths(for: context.package)
+    }
 
 //    let workingDirectory = context.package.directory
 //    let swiftLintConfigFilePath = workingDirectory.appending("swiftlint.yml").string
