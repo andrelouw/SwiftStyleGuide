@@ -47,15 +47,22 @@ struct FormatSwift: CommandPlugin {
       "--swift-format-cache-path",
       context.pluginWorkDirectory.string + "/swiftformat.cache",
       "--swift-lint-cache-path",
-      context.pluginWorkDirectory.string + "/swiftlint.cache",
-      "--log"
+      context.pluginWorkDirectory.string + "/swiftlint.cache"
     ]
 
     if shouldOnlyLint(&argumentExtractor) {
       arguments += ["--swift-lint-only-lint", "--swift-format-only-lint"]
     }
 
+    if shouldLog(&argumentExtractor) {
+      arguments += ["--log"]
+    }
+
     return arguments
+  }
+
+  private func shouldLog(_ argumentExtractor: inout ArgumentExtractor) -> Bool {
+    argumentExtractor.extractFlag(named: "log") > 0
   }
 
   private func shouldOnlyLint(_ argumentExtractor: inout ArgumentExtractor) -> Bool {
