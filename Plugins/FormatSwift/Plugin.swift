@@ -7,16 +7,22 @@ struct FormatSwift: CommandPlugin {
     context: PluginContext,
     arguments _: [String]
   ) async throws {
+    let targets = context.package.targets
+
+    let directories = targets.map { $0.directory.string }
+
     let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
 
-    let arguments = [
+    var arguments = directories
+
+    arguments += [
       "--swift-format-path", "/opt/homebrew/bin/swiftformat",
       "--swift-lint-path", "/opt/homebrew/bin/swiftlint",
       "--swift-format-cache-path",
       context.pluginWorkDirectory.string + "/swiftformat.cache",
       "--swift-lint-cache-path",
       context.pluginWorkDirectory.string + "/swiftlint.cache",
-      ".", "--log"
+      "--log", "--swift-lint-only-lint", "--swift-format-only-lint"
     ]
 
     let process = Process()
