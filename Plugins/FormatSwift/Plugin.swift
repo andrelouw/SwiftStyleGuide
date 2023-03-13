@@ -58,9 +58,19 @@ struct FormatSwift: CommandPlugin {
       arguments += ["--log"]
     }
 
+    arguments += ["--swift-version", swiftVersion(&argumentExtractor, context)]
+
     arguments += argumentExtractor.remainingArguments
 
     return arguments
+  }
+
+  private func swiftVersion(_ argumentExtractor: inout ArgumentExtractor, context: PluginContext) -> String {
+    // When running on a SPM package we infer the minimum Swift version from the
+    // `swift-tools-version` in `Package.swift` by default if the user doesn't
+    // specify one manually
+    argumentExtractor.extractOption(named: "swift-version").last
+    ?? "\(context.package.toolsVersion.major).\(context.package.toolsVersion.minor)"
   }
 
   private func shouldLog(_ argumentExtractor: inout ArgumentExtractor) -> Bool {
