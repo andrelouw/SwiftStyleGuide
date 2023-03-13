@@ -50,7 +50,7 @@ struct FormatSwift: CommandPlugin {
       context.pluginWorkDirectory.string + "/swiftlint.cache"
     ]
 
-    arguments += configFileArguments(context: context)
+    arguments += configFileArguments(&argumentExtractor, context)
 
     if shouldOnlyLint(&argumentExtractor) {
       arguments += ["--swift-lint-only-lint", "--swift-format-only-lint"]
@@ -67,15 +67,22 @@ struct FormatSwift: CommandPlugin {
     return arguments
   }
 
-  private func configFileArguments(context: PluginContext) -> [String] {
+  private func configFileArguments(
+    _ argumentExtractor: inout ArgumentExtractor,
+    _ context: PluginContext
+  ) -> [String] {
     let packageDirectory = context.package.directory
     var arguments = [String]()
 
-    if let swiftLintConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftlint.yml") {
+    if let configFile = argumentExtractor.extractOption(named: "swift-lint-config").last {
+      arguments.append(contentsOf: ["--swift-lint-config", configFile])
+    } else if let swiftLintConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftlint.yml") {
       arguments.append(contentsOf: ["--swift-lint-config", swiftLintConfigPath.string])
     }
 
-    if let swiftFormatConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftformat") {
+    if let configFile = argumentExtractor.extractOption(named: "swift-format-config").last {
+      arguments.append(contentsOf: ["--swift-format-config", configFile])
+    } else if let swiftFormatConfigPath = packageDirectory.firstFileInParentDirectories(named: "swiftformat") {
       arguments.append(contentsOf: ["--swift-format-config", swiftFormatConfigPath.string])
     }
 
