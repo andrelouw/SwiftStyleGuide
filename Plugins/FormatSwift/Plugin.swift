@@ -7,13 +7,15 @@ struct FormatSwift: CommandPlugin {
     context: PluginContext,
     arguments _: [String]
   ) async throws {
-    let targets = context.package.targets
-
-    let directories = targets.map { $0.directory.string }
+    // Path options:
+    // - Add specific paths using `--paths`
+    // - Add specific targets using `--targets`
+    // - defaults to running on whole directory
+    let workingDirectory = context.package.directory.string
 
     let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
 
-    var arguments = directories
+    var arguments = [workingDirectory]
 
     arguments += [
       "--swift-format-path", "/opt/homebrew/bin/swiftformat",
