@@ -13,8 +13,18 @@ struct FormatSwift: CommandPlugin {
     // - defaults to running on whole directory (by using input paths helper)
 
     var argumentExtractor = ArgumentExtractor(arguments)
+
+    // When ran from Xcode, the plugin command is invoked with `--target` arguments,
+    // specifying the targets selected in the plugin dialog.
+    let inputTargets = argumentExtractor.extractOption(named: "target")
+
     // If given, lint only the paths passed to `--paths`
     var inputPaths = argumentExtractor.extractOption(named: "paths")
+
+    if !inputTargets.isEmpty {
+      // If a set of input targets were given, lint/format the directory for each of them
+      inputPaths += try context.package.targets(named: inputTargets).map { $0.directory.string }
+    }
 
     if inputPaths.isEmpty {
       // Otherwise if no targets or paths listed we default to linting/formatting
