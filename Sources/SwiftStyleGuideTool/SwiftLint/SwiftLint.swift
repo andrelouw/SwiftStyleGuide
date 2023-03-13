@@ -12,7 +12,7 @@ struct SwiftLint: StyleGuideTool {
     @Option(help: "The absolute path to use for SwiftLint's cache")
     var swiftLintCachePath: String?
 
-    @Option(help: "When passed, source files are not reformatted")
+    @Flag(help: "When passed, source files are not reformatted")
     var swiftLintOnlyLint: Bool = false
   }
 

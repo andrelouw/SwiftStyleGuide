@@ -12,7 +12,7 @@ struct SwiftFormat: StyleGuideTool {
     @Option(help: "The absolute path to use for SwiftFormat's cache")
     var swiftFormatCachePath: String?
 
-    @Option(help: "When passed, source files are not reformatted")
+    @Flag(help: "When passed, source files are not reformatted")
     var swiftFormatOnlyLint: Bool = false
 
     @Option(help: "The project's minimum Swift version")
