@@ -7,8 +7,9 @@ struct FormatSwift: CommandPlugin {
     context: PluginContext,
     arguments: [String]
   ) async throws {
-    let paths = try determinePaths(from: arguments, context: context)
-    let toolArguments = toolArguments(paths: paths, context: context)
+    var argumentExtractor = ArgumentExtractor(arguments)
+    let paths = try determinePaths(argumentExtractor: &argumentExtractor, context: context)
+    let toolArguments = toolArguments(from: paths, &argumentExtractor, context)
     let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
 
     let process = Process()
@@ -26,7 +27,11 @@ struct FormatSwift: CommandPlugin {
     }
   }
 
-  private func toolArguments(paths: [String], context: PluginContext) -> [String] {
+  private func toolArguments(
+    from paths: [String],
+    _ argumentExtractor: inout ArgumentExtractor,
+    _ context: PluginContext
+  ) -> [String] {
     var arguments = paths
 
     // To get config files in package root
@@ -43,15 +48,21 @@ struct FormatSwift: CommandPlugin {
       context.pluginWorkDirectory.string + "/swiftformat.cache",
       "--swift-lint-cache-path",
       context.pluginWorkDirectory.string + "/swiftlint.cache",
-      "--log", "--swift-lint-only-lint", "--swift-format-only-lint"
+      "--log"
     ]
+
+    if shouldOnlyLint(&argumentExtractor) {
+      arguments += ["--swift-lint-only-lint", "--swift-format-only-lint"]
+    }
 
     return arguments
   }
 
-  private func determinePaths(from arguments: [String], context: PluginContext) throws -> [String] {
-    var argumentExtractor = ArgumentExtractor(arguments)
+  private func shouldOnlyLint(_ argumentExtractor: inout ArgumentExtractor) -> Bool {
+    argumentExtractor.extractFlag(named: "lint") > 0
+  }
 
+  private func determinePaths(argumentExtractor: inout ArgumentExtractor, context: PluginContext) throws -> [String] {
     // When ran from Xcode, the plugin command is invoked with `--target` arguments,
     // specifying the targets selected in the plugin dialog.
     let inputTargets = argumentExtractor.extractOption(named: "target")
@@ -61,7 +72,7 @@ struct FormatSwift: CommandPlugin {
 
     if !inputTargets.isEmpty {
       // If a set of input targets were given, lint/format the directory for each of them
-      paths += try context.package.targets(named: inputTargets).map { $0.directory.string }
+      paths += try context.package.targets(named: inputTargets).map(\.directory.string)
     } else if paths.isEmpty {
       // Otherwise if no targets or paths listed we default to linting/formatting
       // the entire package directory.
@@ -85,11 +96,12 @@ struct FormatSwift: CommandPlugin {
     let packageDirectoryContents = try FileManager.default.contentsOfDirectory(
       at: URL(fileURLWithPath: package.directory.string),
       includingPropertiesForKeys: nil,
-      options: [.skipsHiddenFiles])
+      options: [.skipsHiddenFiles]
+    )
 
-    let subdirectories = packageDirectoryContents.filter { $0.hasDirectoryPath }
+    let subdirectories = packageDirectoryContents.filter(\.hasDirectoryPath)
     let rootSwiftFiles = packageDirectoryContents.filter { $0.pathExtension.hasSuffix("swift") }
-    return (subdirectories + rootSwiftFiles).map { $0.path }
+    return (subdirectories + rootSwiftFiles).map(\.path)
   }
 }
 
