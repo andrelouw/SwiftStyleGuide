@@ -13,6 +13,7 @@ struct FormatSwift: CommandPlugin {
     // - defaults to running on whole directory
     let workingDirectory = context.package.directory
     let swiftLintConfigFilePath = workingDirectory.appending("swiftlint.yml").string
+    let swiftFormatConfigFilePath = workingDirectory.appending("swiftformat").string
 
     let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
 
@@ -20,6 +21,7 @@ struct FormatSwift: CommandPlugin {
 
     arguments += [
       "--swift-format-path", "/opt/homebrew/bin/swiftformat",
+      "--swift-format-config", swiftFormatConfigFilePath,
       "--swift-lint-path", "/opt/homebrew/bin/swiftlint",
       "--swift-lint-config", swiftLintConfigFilePath,
       "--swift-format-cache-path",
