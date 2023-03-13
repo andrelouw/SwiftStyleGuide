@@ -58,6 +58,8 @@ struct FormatSwift: CommandPlugin {
       arguments += ["--log"]
     }
 
+    arguments += argumentExtractor.remainingArguments
+
     return arguments
   }
 
