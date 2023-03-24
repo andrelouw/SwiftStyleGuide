@@ -27,7 +27,7 @@ struct SwiftFormatArgumentBuilder: ArgumentBuildable {
   }
 
   private func cachePath(from context: PluginContext) -> Argument {
-    .swiftFormatCachePath(context.pluginWorkDirectory.string)
+    .swiftFormatCachePath(context.pluginWorkDirectory.string + "/swiftformat.cache")
   }
 
   private func configFile(from parsedArguments: ParsedArguments, context: PluginContext) -> Argument? {

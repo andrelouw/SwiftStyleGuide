@@ -5,7 +5,7 @@ import PackagePlugin
 struct FormatSwiftCommand: CommandPlugin {
   func performCommand(context: PluginContext, arguments externalArguments: [String]) async throws {
     let styleSwift = try context.tool(named: "style-swift")
-    let argumentBuilders: [ArgumentBuildable] = [.paths, .swiftFormat]
+    let argumentBuilders: [ArgumentBuildable] = [.paths, .swiftFormat, .swiftLint]
     var argumentExtractor = ArgumentExtractor(externalArguments)
 
     do {
@@ -17,7 +17,6 @@ struct FormatSwiftCommand: CommandPlugin {
     }
   }
 }
-
 
 // struct FormatSwift: CommandPlugin {
 //  func performCommand(

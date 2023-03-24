@@ -1,5 +1,5 @@
-import PackagePlugin
 import Foundation
+import PackagePlugin
 
 extension ArgumentBuildable where Self == PathArgumentBuilder {
   static var paths: Self { PathArgumentBuilder() }
@@ -7,8 +7,8 @@ extension ArgumentBuildable where Self == PathArgumentBuilder {
 
 struct PathArgumentBuilder: ArgumentBuildable {
   func arguments(
-      using argumentExtractor: inout ArgumentExtractor,
-      context: PluginContext
+    using argumentExtractor: inout ArgumentExtractor,
+    context: PluginContext
   ) throws -> [String] {
     let parsedArguments = ParsedArguments.parse(using: &argumentExtractor)
 
@@ -38,9 +38,9 @@ struct PathArgumentBuilder: ArgumentBuildable {
   ///    plugin targets, which include Swift code that we want to lint/format.
   private func allPaths(for package: Package) throws -> [String] {
     let packageDirectoryContents = try FileManager.default.contentsOfDirectory(
-        at: URL(fileURLWithPath: package.directory.string),
-        includingPropertiesForKeys: nil,
-        options: [.skipsHiddenFiles]
+      at: URL(fileURLWithPath: package.directory.string),
+      includingPropertiesForKeys: nil,
+      options: [.skipsHiddenFiles]
     )
 
     let subdirectories = packageDirectoryContents.filter(\.hasDirectoryPath)
@@ -54,13 +54,13 @@ private struct ParsedArguments: ArgumentParsable {
   let paths: [String]
 
   static func parse(
-      using argumentExtractor: inout ArgumentExtractor
+    using argumentExtractor: inout ArgumentExtractor
   ) -> ParsedArguments {
     ParsedArguments(
-        // When ran from Xcode, the plugin command is invoked with `--target` arguments,
-        // specifying the targets selected in the plugin dialog.
-        targets: argument("target", using: &argumentExtractor),
-        paths: argument("paths", using: &argumentExtractor)
+      // When ran from Xcode, the plugin command is invoked with `--target` arguments,
+      // specifying the targets selected in the plugin dialog.
+      targets: argument("target", using: &argumentExtractor),
+      paths: argument("paths", using: &argumentExtractor)
     )
   }
 }
