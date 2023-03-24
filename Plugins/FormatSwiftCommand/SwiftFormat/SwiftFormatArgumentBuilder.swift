@@ -8,12 +8,12 @@ struct SwiftFormatArgumentBuilder: ArgumentBuildable {
   func arguments(
     using argumentExtractor: inout ArgumentExtractor,
     context: CommandContext
-  ) -> [String] {
+  ) throws -> [String] {
     let parsedArguments = ParsedArguments.parse(using: &argumentExtractor)
 
     var arguments = Arguments()
 
-    arguments.add(executablePath(from: context))
+    try arguments.add(executablePath(from: context))
     arguments.add(cachePath(from: context))
     arguments.addIfNotNil(configFile(from: parsedArguments, context: context))
     arguments.addIfNotNil(swiftVersion(from: parsedArguments, context: context))
@@ -21,9 +21,9 @@ struct SwiftFormatArgumentBuilder: ArgumentBuildable {
     return arguments.asStringArray()
   }
 
-  private func executablePath(from _: CommandContext) -> Argument {
-    // TODO: Rather use binary here and use context to get it
-    .swiftFormatExecutablePath("/opt/homebrew/bin/swiftformat")
+  private func executablePath(from context: CommandContext) throws -> Argument {
+    let swiftFormatPath = try context.tool(named: "swiftformat").path.string
+    return .swiftFormatExecutablePath(swiftFormatPath)
   }
 
   private func cachePath(from context: CommandContext) -> Argument {

@@ -36,8 +36,14 @@ let package = Package(
       ),
       dependencies: [
         .target(name: "style-swift"),
-        .target(name: "SwiftLintBinary")
+        .target(name: "SwiftLintBinary"),
+        .target(name: "swiftformat")
       ]
+    ),
+    .binaryTarget(
+      name: "swiftformat",
+      url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.51.2/swiftformat.artifactbundle.zip",
+      checksum: "d8954ff40cf39d8e343eabd83e730bd8c85a27463e356e66cd51808ca3badcc7"
     ),
     .binaryTarget(
       name: "SwiftLintBinary",
