@@ -12,6 +12,6 @@ extension Argument {
   }
 
   static var swiftLintLintOnly: Argument {
-    Argument(name: "swift-lint-only-lint", value: nil)
+    Argument(name: "swift-lint-lint-only", value: nil)
   }
 }

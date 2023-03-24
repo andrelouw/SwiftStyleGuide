@@ -18,6 +18,6 @@ extension Argument {
   }
 
   static var swiftFormatLintOnly: Argument {
-    Argument(name: "swift-format-only-lint", value: nil)
+    Argument(name: "swift-format-lint-only", value: nil)
   }
 }

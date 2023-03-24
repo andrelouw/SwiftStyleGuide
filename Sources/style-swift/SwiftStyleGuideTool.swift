@@ -39,22 +39,25 @@ struct SwiftStyleGuideTool: ParsableCommand {
 
   private func run(process: ToolProcess) throws -> ProcessResult {
     if log {
+      log("Running \(process.name)")
       log(process.command)
     }
 
     let result = try process.run()
 
-    if log {
-      switch result {
-      case .success:
-        log("\(process.name) completed successfully")
+    switch result {
+    case let .success(message):
+      log("\(process.name) completed successfully")
+      if let message { log(message) }
 
-      case .lintFailure:
-        log("\(process.name) failed due to linting failure")
-
-      case let .error(exitCode):
-        log("\(process.name) failed with exit code: \(exitCode)")
+    case let .lintFailure(warnings):
+      log("\(process.name) failed due to linting failure")
+      warnings.forEach {
+        log($0)
       }
+
+    case let .error(exitCode, error):
+      log("\(process.name) failed with exit code: \(exitCode)\n error: \(String(describing: error))")
     }
 
     return result

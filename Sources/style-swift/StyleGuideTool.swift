@@ -7,7 +7,7 @@ protocol StyleGuideTool {
   var executablePath: String { get }
   var arguments: [String] { get }
 
-  func resultParser(_ result: Int32) -> ProcessResult
+  func resultParser(_ result: ToolProcessResult) -> ProcessResult
 }
 
 extension StyleGuideTool {

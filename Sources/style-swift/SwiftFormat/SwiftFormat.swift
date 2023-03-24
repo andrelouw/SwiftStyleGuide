@@ -13,7 +13,7 @@ struct SwiftFormat: StyleGuideTool {
     var swiftFormatCachePath: String?
 
     @Flag(help: "When passed, source files are not reformatted")
-    var swiftFormatOnlyLint: Bool = false
+    var swiftFormatLintOnly: Bool = false
 
     @Option(help: "The project's minimum Swift version")
     var swiftVersion: String?
@@ -31,17 +31,22 @@ struct SwiftFormat: StyleGuideTool {
     executablePath = options.swiftFormatPath
   }
 
-  func resultParser(_ result: Int32) -> ProcessResult {
-    if result == SwiftFormatExitCode.lintFailure {
-      return .lintFailure
+  func resultParser(_ result: ToolProcessResult) -> ProcessResult {
+    if result.terminationStatus == SwiftFormatExitCode.lintFailure {
+      var lintWarnings = result.stderr?.components(separatedBy: .newlines) ?? []
+      lintWarnings = lintWarnings.filter {
+        ["warning", "error"].contains(where: $0.contains)
+      }
+
+      return .lintFailure(lintWarnings)
     }
 
     // Any other non-success exit code is an unknown failure
-    if result != SwiftFormatExitCode.success {
-      return .error(result)
+    if result.terminationStatus != SwiftFormatExitCode.success {
+      return .error(result.terminationStatus, result.stderr)
     }
 
-    return .success
+    return .success(result.stdout)
   }
 
   private static func argumentsParser(directories: [String], options: Options) -> [String] {
@@ -53,7 +58,7 @@ struct SwiftFormat: StyleGuideTool {
       arguments += ["--cache", cachePath]
     }
 
-    if options.swiftFormatOnlyLint {
+    if options.swiftFormatLintOnly {
       arguments += ["--lint"]
     }
 
