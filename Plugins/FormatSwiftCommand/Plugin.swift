@@ -5,19 +5,19 @@ import PackagePlugin
 struct FormatSwiftCommand: CommandPlugin {
   func performCommand(context: PluginContext, arguments externalArguments: [String]) async throws {
     let styleSwift = try context.tool(named: "style-swift")
-    let argumentBuilders: [ArgumentBuildable] = [.swiftFormat]
+    let argumentBuilders: [ArgumentBuildable] = [.paths, .swiftFormat]
     var argumentExtractor = ArgumentExtractor(externalArguments)
 
-    var arguments = argumentBuilders.flatMap { $0.arguments(using: &argumentExtractor, context: context) }
-    arguments.append(contentsOf: argumentExtractor.remainingArguments)
-
     do {
+      var arguments = try argumentBuilders.flatMap { try $0.arguments(using: &argumentExtractor, context: context) }
+      arguments.append(contentsOf: argumentExtractor.remainingArguments)
       try styleSwift.run(arguments: arguments)
     } catch let error as PluginContext.Tool.RunError {
       Diagnostics.error(error.description)
     }
   }
 }
+
 
 // struct FormatSwift: CommandPlugin {
 //  func performCommand(

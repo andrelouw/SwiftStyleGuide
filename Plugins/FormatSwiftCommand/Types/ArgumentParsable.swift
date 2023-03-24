@@ -14,4 +14,8 @@ extension ArgumentParsable {
   static func hasFlag(_ name: String, using argumentExtractor: inout ArgumentExtractor) -> Bool {
     argumentExtractor.extractFlag(named: name) > 0
   }
+
+  static func argument(_ name: String, using argumentExtractor: inout ArgumentExtractor) -> [String] {
+    argumentExtractor.extractOption(named: name)
+  }
 }
