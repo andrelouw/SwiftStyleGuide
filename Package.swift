@@ -8,7 +8,7 @@ let package = Package(
   platforms: [.macOS(.v13)],
   products: [
     .executable(name: "style-swift", targets: ["style-swift"]),
-    .plugin(name: "FormatSwift", targets: ["FormatSwift"]),
+    .plugin(name: "FormatSwift", targets: ["FormatSwiftCommand"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
@@ -24,7 +24,7 @@ let package = Package(
       ]
     ),
     .plugin(
-      name: "FormatSwift",
+      name: "FormatSwiftCommand",
       capability: .command(
         intent: .custom(
           verb: "format",
@@ -37,6 +37,6 @@ let package = Package(
       dependencies: [
         .target(name: "style-swift")
       ]
-    ),
+    )
   ]
 )
