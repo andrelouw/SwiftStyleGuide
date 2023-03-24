@@ -1,11 +1,7 @@
 import Foundation
 import PackagePlugin
 
-extension ArgumentBuildable where Self == PathArgumentBuilder {
-  static var paths: Self { PathArgumentBuilder() }
-}
-
-struct PathArgumentBuilder: ArgumentBuildable {
+struct PathArgumentBuilder {
   func arguments(
     using argumentExtractor: inout ArgumentExtractor,
     context: PluginContext

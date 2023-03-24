@@ -8,7 +8,7 @@ extension ArgumentBuildable where Self == SwiftLintArgumentBuilder {
 struct SwiftLintArgumentBuilder: ArgumentBuildable {
   func arguments(
     using argumentExtractor: inout ArgumentExtractor,
-    context: PluginContext
+    context: CommandContext
   ) throws -> [String] {
     let parsedArguments = ParsedArguments.parse(using: &argumentExtractor)
 
@@ -21,21 +21,21 @@ struct SwiftLintArgumentBuilder: ArgumentBuildable {
     return arguments.asStringArray()
   }
 
-  private func executablePath(from _: PluginContext) -> Argument {
+  private func executablePath(from _: CommandContext) -> Argument {
     // TODO: Rather use binary here and use context to get it
     .swiftLintExecutablePath("/opt/homebrew/bin/swiftlint")
   }
 
-  private func cachePath(from context: PluginContext) -> Argument {
+  private func cachePath(from context: CommandContext) -> Argument {
     .swiftLintCachePath(context.pluginWorkDirectory.string + "/swiftlint.cache")
   }
 
-  private func configFile(from parsedArguments: ParsedArguments, context: PluginContext) -> Argument? {
+  private func configFile(from parsedArguments: ParsedArguments, context: CommandContext) -> Argument? {
     if let configFile = parsedArguments.configFile {
       return .swiftLintConfig(configFile)
     }
 
-    if let configFile = context.package.directory.firstFileInParentDirectories(named: "swiftlint.yml") {
+    if let configFile = context.workingDirectory.firstFileInParentDirectories(named: "swiftlint.yml") {
       return .swiftLintConfig(configFile.string)
     }
 

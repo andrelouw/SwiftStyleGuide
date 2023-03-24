@@ -7,7 +7,7 @@ extension ArgumentBuildable where Self == CommonArgumentBuilder {
 struct CommonArgumentBuilder: ArgumentBuildable {
   func arguments(
     using argumentExtractor: inout ArgumentExtractor,
-    context _: PluginContext
+    context _: CommandContext
   ) throws -> [String] {
     let parsedArguments = ParsedArguments.parse(using: &argumentExtractor)
     var arguments = Arguments()

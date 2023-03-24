@@ -7,7 +7,7 @@ extension ArgumentBuildable where Self == SwiftFormatArgumentBuilder {
 struct SwiftFormatArgumentBuilder: ArgumentBuildable {
   func arguments(
     using argumentExtractor: inout ArgumentExtractor,
-    context: PluginContext
+    context: CommandContext
   ) -> [String] {
     let parsedArguments = ParsedArguments.parse(using: &argumentExtractor)
 
@@ -16,37 +16,41 @@ struct SwiftFormatArgumentBuilder: ArgumentBuildable {
     arguments.add(executablePath(from: context))
     arguments.add(cachePath(from: context))
     arguments.addIfNotNil(configFile(from: parsedArguments, context: context))
-    arguments.add(swiftVersion(from: parsedArguments, context: context))
+    arguments.addIfNotNil(swiftVersion(from: parsedArguments, context: context))
 
     return arguments.asStringArray()
   }
 
-  private func executablePath(from _: PluginContext) -> Argument {
+  private func executablePath(from _: CommandContext) -> Argument {
     // TODO: Rather use binary here and use context to get it
     .swiftFormatExecutablePath("/opt/homebrew/bin/swiftformat")
   }
 
-  private func cachePath(from context: PluginContext) -> Argument {
+  private func cachePath(from context: CommandContext) -> Argument {
     .swiftFormatCachePath(context.pluginWorkDirectory.string + "/swiftformat.cache")
   }
 
-  private func configFile(from parsedArguments: ParsedArguments, context: PluginContext) -> Argument? {
+  private func configFile(from parsedArguments: ParsedArguments, context: CommandContext) -> Argument? {
     if let configFile = parsedArguments.configFile {
       return .swiftFormatConfig(configFile)
     }
 
-    if let swiftFormatConfigPath = context.package.directory.firstFileInParentDirectories(named: "swiftformat") {
+    if let swiftFormatConfigPath = context.workingDirectory.firstFileInParentDirectories(named: "swiftformat") {
       return .swiftFormatConfig(swiftFormatConfigPath.string)
     }
 
     return nil
   }
 
-  private func swiftVersion(from parsedArguments: ParsedArguments, context: PluginContext) -> Argument {
+  private func swiftVersion(from parsedArguments: ParsedArguments, context: CommandContext) -> Argument? {
     // When running on a SPM package we infer the minimum Swift version from the
     // `swift-tools-version` in `Package.swift` by default if the user doesn't
     // specify one manually
-    let version = parsedArguments.swiftVersion ?? "\(context.package.toolsVersion.major).\(context.package.toolsVersion.minor)"
+    let version = parsedArguments.swiftVersion ?? context.swiftVersion
+
+    guard let version else {
+      return nil
+    }
 
     return .swiftFormatSwiftVersion(version)
   }
