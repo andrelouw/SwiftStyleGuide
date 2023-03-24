@@ -10,7 +10,7 @@ struct FormatSwift: CommandPlugin {
     var argumentExtractor = ArgumentExtractor(arguments)
     let paths = try determinePaths(&argumentExtractor, context)
     let toolArguments = toolArguments(from: paths, &argumentExtractor, context)
-    let launchPath = try context.tool(named: "SwiftStyleGuideTool").path.string
+    let launchPath = try context.tool(named: "style-swift").path.string
 
     let process = Process()
     process.launchPath = launchPath

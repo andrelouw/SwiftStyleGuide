@@ -7,15 +7,15 @@ let package = Package(
   name: "SwiftStyleGuide",
   platforms: [.macOS(.v13)],
   products: [
-    //    .executable(name: "style", targets: ["SwiftStyleGuideTool"]), // This does not work for some reason
-    .plugin(name: "FormatSwift", targets: ["FormatSwift"])
+    .executable(name: "style-swift", targets: ["style-swift"]),
+    .plugin(name: "FormatSwift", targets: ["FormatSwift"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
   ],
   targets: [
     .executableTarget(
-      name: "SwiftStyleGuideTool",
+      name: "style-swift",
       dependencies: [
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ],
@@ -28,15 +28,15 @@ let package = Package(
       capability: .command(
         intent: .custom(
           verb: "format",
-          description: "Formats Swift source files according to Swift Style Guide"
+          description: "Formats Swift source files according to the Swift Style Guide"
         ),
         permissions: [
           .writeToPackageDirectory(reason: "Format Swift source files")
         ]
       ),
       dependencies: [
-        .target(name: "SwiftStyleGuideTool")
+        .target(name: "style-swift")
       ]
-    )
+    ),
   ]
 )
