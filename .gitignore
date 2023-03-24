@@ -9,3 +9,4 @@ DerivedData/
 .netrc
 swiftformat.cache
 swiftlint.cache/SwiftLint/0.50.3/8A15E025-5465-3060-8BA1-043E215CA907
+.idea
