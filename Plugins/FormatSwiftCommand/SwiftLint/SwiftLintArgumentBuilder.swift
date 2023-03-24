@@ -14,16 +14,16 @@ struct SwiftLintArgumentBuilder: ArgumentBuildable {
 
     var arguments = Arguments()
 
-    arguments.add(executablePath(from: context))
+    try arguments.add(executablePath(from: context))
     arguments.add(cachePath(from: context))
     arguments.addIfNotNil(configFile(from: parsedArguments, context: context))
 
     return arguments.asStringArray()
   }
 
-  private func executablePath(from _: CommandContext) -> Argument {
-    // TODO: Rather use binary here and use context to get it
-    .swiftLintExecutablePath("/opt/homebrew/bin/swiftlint")
+  private func executablePath(from context: CommandContext) throws -> Argument {
+    let swiftLintPath = try context.tool(named: "swiftlint").path.string
+    return .swiftLintExecutablePath(swiftLintPath)
   }
 
   private func cachePath(from context: CommandContext) -> Argument {
