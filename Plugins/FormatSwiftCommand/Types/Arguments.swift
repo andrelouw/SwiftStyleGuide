@@ -15,6 +15,10 @@ struct Arguments {
     }
   }
 
+  mutating func add(_ arguments: [Argument]) {
+    self.arguments.append(contentsOf: arguments)
+  }
+
   func asStringArray() -> [String] {
     arguments.flatMap { $0.asStringArray() }
   }

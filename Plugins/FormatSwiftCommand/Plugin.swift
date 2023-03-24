@@ -5,7 +5,7 @@ import PackagePlugin
 struct FormatSwiftCommand: CommandPlugin {
   func performCommand(context: PluginContext, arguments externalArguments: [String]) async throws {
     let styleSwift = try context.tool(named: "style-swift")
-    let argumentBuilders: [ArgumentBuildable] = [.paths, .swiftFormat, .swiftLint]
+    let argumentBuilders: [ArgumentBuildable] = [.paths, .swiftFormat, .swiftLint, .common]
     var argumentExtractor = ArgumentExtractor(externalArguments)
 
     do {

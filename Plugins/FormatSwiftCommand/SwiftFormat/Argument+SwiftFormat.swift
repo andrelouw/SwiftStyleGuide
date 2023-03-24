@@ -16,4 +16,8 @@ extension Argument {
   static func swiftFormatSwiftVersion(_ value: String) -> Argument {
     Argument(name: "swift-version", value: value)
   }
+
+  static var swiftFormatLintOnly: Argument {
+    Argument(name: "swift-format-only-lint", value: nil)
+  }
 }
