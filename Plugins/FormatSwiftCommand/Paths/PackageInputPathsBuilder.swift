@@ -1,8 +1,8 @@
 import Foundation
 import PackagePlugin
 
-struct PathArgumentBuilder {
-  func arguments(
+struct PackageInputPathsBuilder {
+  static func inputPaths(
     using argumentExtractor: inout ArgumentExtractor,
     context: PluginContext
   ) throws -> [String] {
@@ -32,7 +32,7 @@ struct PathArgumentBuilder {
   ///    `excluded` configuration in our `swiftlint.yml` or `swiftformat`.
   ///  - We could lint/format `context.package.targets.map { $0.directory }`, but that excludes
   ///    plugin targets, which include Swift code that we want to lint/format.
-  private func allPaths(for package: Package) throws -> [String] {
+  private static func allPaths(for package: Package) throws -> [String] {
     let packageDirectoryContents = try FileManager.default.contentsOfDirectory(
       at: URL(fileURLWithPath: package.directory.string),
       includingPropertiesForKeys: nil,

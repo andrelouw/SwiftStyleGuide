@@ -23,16 +23,16 @@ extension PluginContext: CommandContext {
 }
 
 #if canImport(XcodeProjectPlugin)
-import XcodeProjectPlugin
+  import XcodeProjectPlugin
 
-extension XcodePluginContext: CommandContext {
-  var workingDirectory: Path {
-    xcodeProject.directory
-  }
+  extension XcodePluginContext: CommandContext {
+    var workingDirectory: Path {
+      xcodeProject.directory
+    }
 
-  var swiftVersion: String? {
-    // TODO: Find .swift-version file in working directory and return the version specified
-    nil
+    var swiftVersion: String? {
+      // TODO: Find .swift-version file in working directory and return the version specified
+      nil
+    }
   }
-}
 #endif

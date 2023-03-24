@@ -11,9 +11,10 @@ struct FormatSwiftCommand {
     let styleSwift = try context.tool(named: "style-swift")
     let argumentBuilders: [ArgumentBuildable] = [.swiftFormat, .swiftLint, .common]
 
-    var arguments = try argumentBuilders.flatMap { try $0.arguments(using: &argumentExtractor, context: context) }
-    arguments.append(contentsOf: argumentExtractor.remainingArguments)
+    var arguments = try argumentBuilders
+      .flatMap { try $0.arguments(using: &argumentExtractor, context: context) }
     arguments.append(contentsOf: inputPaths)
+    arguments.append(contentsOf: argumentExtractor.remainingArguments)
 
     do {
       try styleSwift.run(arguments: arguments)
@@ -30,7 +31,8 @@ extension FormatSwiftCommand: CommandPlugin {
   ) async throws {
     var argumentExtractor = ArgumentExtractor(arguments)
 
-    let inputPaths = try PathArgumentBuilder().arguments(using: &argumentExtractor, context: context)
+    let inputPaths = try PackageInputPathsBuilder
+      .inputPaths(using: &argumentExtractor, context: context)
 
     try performCommand(
       context: context,
@@ -50,8 +52,8 @@ extension FormatSwiftCommand: CommandPlugin {
     ) throws {
       var argumentExtractor = ArgumentExtractor(externalArgs)
 
-//    let inputPaths = try PathArgumentBuilder().arguments(using: &argumentExtractor, context: context)
-      let inputPaths = [String]()
+      let inputPaths = try XcodeInputPathsBuilder
+        .inputPaths(using: &argumentExtractor, context: context)
 
       try performCommand(
         context: context,
