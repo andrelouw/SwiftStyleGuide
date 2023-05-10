@@ -10,7 +10,6 @@ let package = Package(
     .executable(name: "style-swift", targets: ["style-swift"]),
     .plugin(name: "FormatSwift", targets: ["FormatSwiftCommand"]),
     .plugin(name: "FormatSwiftBuildPlugin", targets: ["FormatSwiftBuildPlugin"])
-//    .library(name: "Testing", targets: ["Testing"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
@@ -37,7 +36,8 @@ let package = Package(
         ]
       ),
       dependencies: [
-        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+//        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+        .target(name: "SwiftStyleBinary"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
         .target(name: "SwiftLintBinary"),
         .target(name: "swiftformat")
       ]
@@ -46,7 +46,8 @@ let package = Package(
       name: "FormatSwiftBuildPlugin",
       capability: .buildTool(),
       dependencies: [
-        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+//        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+        .target(name: "SwiftStyleBinary"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
         .target(name: "SwiftLintBinary"),
         .target(name: "swiftformat")
       ]
@@ -60,10 +61,12 @@ let package = Package(
       name: "SwiftLintBinary",
       url: "https://github.com/realm/SwiftLint/releases/download/0.50.3/SwiftLintBinary-macos.artifactbundle.zip",
       checksum: "abe7c0bb505d26c232b565c3b1b4a01a8d1a38d86846e788c4d02f0b1042a904"
+    ),
+    .binaryTarget(
+      name: "SwiftStyleBinary",
+      url: "https://github.com/andrelouw/SwiftStyleGuide/releases/download/0.0.1/swiftstyle.artifactbundle.zip",
+      checksum: "7c98212ab523a28f2b1f70c70ef7c46d7216a80ac803d9680f9210bb6c0eab1f"
     )
-//    .binaryTarget(
-//      name: "StyleSwift",
-//      path: "StyleSwift-macos.artifactbundle.zip"
-//    )
+    
   ]
 )
