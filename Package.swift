@@ -8,12 +8,20 @@ let package = Package(
   platforms: [.macOS(.v13)],
   products: [
     .executable(name: "style-swift", targets: ["style-swift"]),
-    .plugin(name: "FormatSwift", targets: ["FormatSwiftCommand"])
+    .plugin(name: "FormatSwift", targets: ["FormatSwiftCommand"]),
+    .plugin(name: "FormatSwiftBuildPlugin", targets: ["FormatSwiftBuildPlugin"]),
+    .library(name: "Testing", targets: ["Testing"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3")
   ],
   targets: [
+    .target(
+      name: "Testing",
+      plugins: [
+        .plugin(name: "FormatSwiftBuildPlugin")
+      ]
+    ),
     .executableTarget(
       name: "style-swift",
       dependencies: [
@@ -40,6 +48,15 @@ let package = Package(
         .target(name: "swiftformat")
       ]
     ),
+    .plugin(
+      name: "FormatSwiftBuildPlugin",
+      capability: .buildTool(),
+      dependencies: [
+        .target(name: "StyleSwift"),
+        .target(name: "SwiftLintBinary"),
+        .target(name: "swiftformat")
+      ]
+    ),
     .binaryTarget(
       name: "swiftformat",
       url: "https://github.com/nicklockwood/SwiftFormat/releases/download/0.51.2/swiftformat.artifactbundle.zip",
@@ -49,6 +66,10 @@ let package = Package(
       name: "SwiftLintBinary",
       url: "https://github.com/realm/SwiftLint/releases/download/0.50.3/SwiftLintBinary-macos.artifactbundle.zip",
       checksum: "abe7c0bb505d26c232b565c3b1b4a01a8d1a38d86846e788c4d02f0b1042a904"
+    ),
+    .binaryTarget(
+      name: "StyleSwift",
+      path: "StyleSwift-macos.artifactbundle.zip"
     )
   ]
 )
