@@ -1,4 +1,4 @@
-VERSION=0.0.9
+VERSION=0.0.10
 ARTIFACT_BUNDLE=swiftstyle.artifactbundle
 INFO_TEMPLATE=spm-artifact-bundle-info.template
 MAC_BINARY_OUTPUT_DIR=$(ARTIFACT_BUNDLE)/swiftstyle-$(VERSION)-macos/bin
