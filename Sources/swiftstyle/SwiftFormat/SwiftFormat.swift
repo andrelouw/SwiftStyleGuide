@@ -7,7 +7,7 @@ struct SwiftFormat: StyleGuideTool {
     var swiftFormatPath: String
 
     @Option(help: "The absolute path to the SwiftFormat config file")
-    var swiftFormatConfig: String = "." //Bundle.module.path(forResource: "swiftformat", ofType: "config")!
+    var swiftFormatConfig: String?
 
     @Option(help: "The absolute path to use for SwiftFormat's cache")
     var swiftFormatCachePath: String?
@@ -52,7 +52,9 @@ struct SwiftFormat: StyleGuideTool {
   private static func argumentsParser(directories: [String], options: Options) -> [String] {
     var arguments = directories
 
-    arguments += ["--config", options.swiftFormatConfig]
+    if let config = options.swiftFormatConfig {
+      arguments += ["--config", config]
+    }
 
     if let cachePath = options.swiftFormatCachePath {
       arguments += ["--cache", cachePath]

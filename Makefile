@@ -1,4 +1,4 @@
-VERSION=0.0.7
+VERSION=0.0.8
 ARTIFACT_BUNDLE=swiftstyle.artifactbundle
 INFO_TEMPLATE=spm-artifact-bundle-info.template
 MAC_BINARY_OUTPUT_DIR=$(ARTIFACT_BUNDLE)/swiftstyle-$(VERSION)-macos/bin
@@ -14,7 +14,7 @@ build:
 	swift build -c release --arch x86_64 --arch arm64 --show-bin-path
 	cp $(SWIFTSTYLE_BIN_PATH)/swiftstyle $(MAC_BINARY_OUTPUT_DIR)
 	zip -yr - $(ARTIFACT_BUNDLE) > "$(ARTIFACT_BUNDLE).zip"
-	rm -rf $(ARTIFACT_BUNDLE)
+#	rm -rf $(ARTIFACT_BUNDLE)
 	swift package compute-checksum swiftstyle.artifactbundle.zip
 
 
