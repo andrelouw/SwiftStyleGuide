@@ -12,7 +12,7 @@ build:
 	sed 's/__VERSION__/'"$(VERSION)"'/g' $(INFO_TEMPLATE) > "$(ARTIFACT_BUNDLE)/info.json"
 	mkdir -p "$(MAC_BINARY_OUTPUT_DIR)"
 	swift build -c release --arch x86_64 --arch arm64 --show-bin-path
-	cp $(SWIFTSTYLE_BIN_PATH)/style-swift $(MAC_BINARY_OUTPUT_DIR)
+	cp $(SWIFTSTYLE_BIN_PATH)/swiftstyle $(MAC_BINARY_OUTPUT_DIR)
 	zip -yr - $(ARTIFACT_BUNDLE) > "$(ARTIFACT_BUNDLE).zip"
 	rm -rf $(ARTIFACT_BUNDLE)
 	swift package compute-checksum swiftstyle.artifactbundle.zip

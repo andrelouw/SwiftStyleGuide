@@ -27,7 +27,7 @@ struct FormatBuildPlugin: BuildToolPlugin {
     context: CommandContext,
     inputPaths: [Path]
   ) throws -> [Command] {
-    let tool = try context.tool(named: "style-swift")
+    let tool = try context.tool(named: "swiftstyle")
 
     var arguments = [
       "--swift-lint-path", "/opt/homebrew/bin/swiftlint",

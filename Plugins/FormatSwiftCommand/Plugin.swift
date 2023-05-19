@@ -8,7 +8,7 @@ struct FormatSwiftCommand {
     inputPaths: [String],
     argumentExtractor: inout ArgumentExtractor
   ) throws {
-    let styleSwift = try context.tool(named: "style-swift")
+    let styleSwift = try context.tool(named: "swiftstyle")
     let argumentBuilders: [ArgumentBuildable] = [.swiftFormat, .swiftLint, .common]
 
     var arguments = try argumentBuilders
