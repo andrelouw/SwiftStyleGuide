@@ -15,6 +15,7 @@ build:
 	cp $(SWIFTSTYLE_BIN_PATH)/style-swift $(MAC_BINARY_OUTPUT_DIR)
 	zip -yr - $(ARTIFACT_BUNDLE) > "$(ARTIFACT_BUNDLE).zip"
 	rm -rf $(ARTIFACT_BUNDLE)
+	swift package compute-checksum swiftstyle.artifactbundle.zip
 
 
 
