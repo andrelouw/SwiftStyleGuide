@@ -7,7 +7,7 @@ struct SwiftLint: StyleGuideTool {
     var swiftLintPath: String
 
     @Option(help: "The absolute path to the SwiftLint config file")
-    var swiftLintConfig: String = Bundle.module.path(forResource: "swiftlint", ofType: "yml")!
+    var swiftLintConfig: String = "." //Bundle.module.path(forResource: "swiftlint", ofType: "yml")!
 
     @Option(help: "The absolute path to use for SwiftLint's cache")
     var swiftLintCachePath: String?
