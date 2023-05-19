@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "swiftstyleguide",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/andrelouw/SwiftStyleGuide",
+      "state" : {
+        "revision" : "1646b1e38d7e1383f9a27369b95f92e65702f30a",
+        "version" : "0.0.10"
+      }
+    }
+  ],
+  "version" : 2
+}

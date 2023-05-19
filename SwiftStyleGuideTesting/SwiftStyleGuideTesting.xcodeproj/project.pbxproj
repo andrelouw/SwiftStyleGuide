@@ -81,7 +81,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				4657AD902A1710D80014E064 /* PBXTargetDependency */,
+				4625A42C2A17291D002F234B /* PBXTargetDependency */,
 			);
 			name = SwiftStyleGuideTesting;
 			packageProductDependencies = (
@@ -115,6 +115,7 @@
 			);
 			mainGroup = 4657AD722A1710770014E064;
 			packageReferences = (
+				4625A42A2A172907002F234B /* XCRemoteSwiftPackageReference "SwiftStyleGuide" */,
 			);
 			productRefGroup = 4657AD7C2A1710770014E064 /* Products */;
 			projectDirPath = "";
@@ -150,9 +151,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4657AD902A1710D80014E064 /* PBXTargetDependency */ = {
+		4625A42C2A17291D002F234B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 4657AD8F2A1710D80014E064 /* FormatSwiftBuildPlugin */;
+			productRef = 4625A42B2A17291D002F234B /* FormatSwiftBuildPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -293,9 +294,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.gymondo.SwiftStyleGuideTesting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -321,9 +325,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.gymondo.SwiftStyleGuideTesting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -351,20 +358,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4657AD8C2A1710C40014E064 /* XCRemoteSwiftPackageReference "SwiftStyleGuide" */ = {
+		4625A42A2A172907002F234B /* XCRemoteSwiftPackageReference "SwiftStyleGuide" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/andrelouw/SwiftStyleGuide";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.9;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4657AD8F2A1710D80014E064 /* FormatSwiftBuildPlugin */ = {
+		4625A42B2A17291D002F234B /* FormatSwiftBuildPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4657AD8C2A1710C40014E064 /* XCRemoteSwiftPackageReference "SwiftStyleGuide" */;
+			package = 4625A42A2A172907002F234B /* XCRemoteSwiftPackageReference "SwiftStyleGuide" */;
 			productName = "plugin:FormatSwiftBuildPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
