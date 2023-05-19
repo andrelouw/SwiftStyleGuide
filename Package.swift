@@ -36,8 +36,7 @@ let package = Package(
         ]
       ),
       dependencies: [
-//        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
-        .target(name: "SwiftStyleBinary"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+        .target(name: "SwiftStyleBinary", condition: .when(platforms: [.macOS])),
         .target(name: "SwiftLintBinary"),
         .target(name: "swiftformat")
       ]
@@ -46,8 +45,7 @@ let package = Package(
       name: "FormatSwiftBuildPlugin",
       capability: .buildTool(),
       dependencies: [
-//        .target(name: "style-swift"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
-        .target(name: "SwiftStyleBinary"), // Needs to use binary for macos see https://github.com/realm/SwiftLint/blob/91382131211570b605faa4703a17c5bf3b7c3d6e/Package.swift#L26
+        .target(name: "SwiftStyleBinary", condition: .when(platforms: [.macOS])),
         .target(name: "SwiftLintBinary"),
         .target(name: "swiftformat")
       ]
