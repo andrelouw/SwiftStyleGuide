@@ -6,7 +6,7 @@
             "type": "executable",
             "variants": [
                 {
-                    "path": "swiftstyle-__VERSION__-macos/bin/style-swift",
+                    "path": "swiftstyle-__VERSION__-macos/bin/swiftstyle",
                     "supportedTriples": ["x86_64-apple-macosx", "arm64-apple-macosx"]
                 },
             ]

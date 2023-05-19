@@ -7,7 +7,7 @@ let package = Package(
   name: "SwiftStyleGuide",
   platforms: [.macOS(.v13)],
   products: [
-    .executable(name: "style-swift", targets: ["style-swift"]),
+    .executable(name: "swiftstyle", targets: ["swiftstyle"]),
     .plugin(name: "FormatSwift", targets: ["FormatSwiftCommand"]),
     .plugin(name: "FormatSwiftBuildPlugin", targets: ["FormatSwiftBuildPlugin"])
   ],
@@ -16,7 +16,7 @@ let package = Package(
   ],
   targets: [
     .executableTarget(
-      name: "style-swift",
+      name: "swiftstyle",
       dependencies: [
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ],
