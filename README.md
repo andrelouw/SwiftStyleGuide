@@ -1,7 +1,10 @@
 # SwiftStyle
-
-A linter and formatter to enforce code styling.
 > ⚠️ This project is still under active development and breaking changes is a guarantee. 😱
+
+A linter and formatter using [SwiftLint](https://github.com/realm/SwiftLint/tree/main) and [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) to enforce code styling.
+The idea is to have a stand-alone swift package to enforce a team's code styling, by using linting and formatting.
+The idea came from [Airbnb Swift Style Guide](https://github.com/airbnb/swift) and aims to take their existing approach just one step further.
+
 
 ## Running executable
 ```bash
@@ -33,9 +36,13 @@ To run `swiftstyle` for each build in Xcode add it as a `Build Tool Plugin` unde
 > NOTES:
 > - Refer to script at https://github.com/nicklockwood/SwiftFormat/blob/7ff506897aa5bdaf94f077087a2025b9505da112/Scripts/spm-artifact-bundle.sh
 
+## Roadmap
+See issues for outstanding features/tasks
+
 ## References
 - https://github.com/mac-cain13/R.swift
 - https://github.com/MarcoEidinger/SwiftFormatPlugin
 - https://github.com/nicklockwood/SwiftFormat
 - https://github.com/realm/SwiftLint
 - https://theswiftdev.com/introduction-to-spm-artifact-bundles/
+- https://github.com/airbnb/swift
