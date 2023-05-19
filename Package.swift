@@ -62,8 +62,8 @@ let package = Package(
     ),
     .binaryTarget(
       name: "SwiftStyleBinary",
-      url: "https://github.com/andrelouw/SwiftStyleGuide/releases/download/0.0.8/swiftstyle.artifactbundle.zip",
-      checksum: "66a087e086a5d5a32090274f168cc95a6f5e60bc458e304ee90a7a0aa2061e1f"
+      url: "https://github.com/andrelouw/SwiftStyleGuide/releases/download/0.0.9/swiftstyle.artifactbundle.zip",
+      checksum: "13c7e0103d335fa4ed7917238256b9ba877d625972cab162f0e7bba908644303"
     )
   ]
 )

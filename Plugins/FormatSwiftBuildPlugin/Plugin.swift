@@ -38,17 +38,17 @@ struct FormatBuildPlugin: BuildToolPlugin {
     arguments.append(contentsOf: inputPaths.map(\.string))
 
     return [
-//      .buildCommand(
-//        displayName: "FormatSwift",
-//        executable: tool.path,
-//        arguments: arguments
-//      ),
-      .prebuildCommand(
+      .buildCommand(
         displayName: "FormatSwift",
         executable: tool.path,
-        arguments: arguments,
-        outputFilesDirectory: context.workingDirectory.appending("Output")
-      )
+        arguments: arguments
+      ),
+//      .prebuildCommand(
+//        displayName: "FormatSwift",
+//        executable: tool.path,
+//        arguments: arguments,
+//        outputFilesDirectory: context.workingDirectory.appending("Output")
+//      )
     ]
   }
 }
